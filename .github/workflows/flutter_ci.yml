@@ -15,12 +15,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+          channel: 'stable'
+
       - name: Install fvm
         run: |
           dart pub global activate fvm
           echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
-      - name: Setup Flutter
+      - name: Install Flutter
         run: |
           fvm install
           fvm flutter --version
