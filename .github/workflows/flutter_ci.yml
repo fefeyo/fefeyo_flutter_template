@@ -1,0 +1,35 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & Analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install fvm
+        run: |
+          dart pub global activate fvm
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Setup Flutter
+        run: |
+          fvm install
+          fvm flutter --version
+
+      - name: Setup Make
+        run: sudo apt-get update && sudo apt-get install -y make
+
+      - name: Run make init
+        run: fvm flutter pub get && make init
+
+      - name: Run analyze
+        run: make analyze
