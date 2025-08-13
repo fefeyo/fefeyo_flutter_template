@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    name: Build & Analyze
+  setup:
+    name: Setup & init
     runs-on: ubuntu-latest
 
     steps:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'
+          flutter-version: '3.32.8'
           channel: 'stable'
 
       - name: Install fvm
@@ -37,5 +37,26 @@ jobs:
       - name: Run make init
         run: fvm flutter pub get && make init
 
-      - name: Run analyze
-        run: make analyze
+  build:
+    name: Flutter Build
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+          channel: stable
+      - run: flutter build apk
+
+  analyze:
+    name: Flutter Analyze
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+          channel: stable
+      - run: flutter analyze
